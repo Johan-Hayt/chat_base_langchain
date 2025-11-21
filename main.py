@@ -44,3 +44,14 @@ if pregunta:
     
     #Almacenamos el mensaje en la memoria de streamlit
     st.session_state.mensajes.append(HumanMessage(content = pregunta))
+
+
+    # Generar respuesta del asistente
+    respuesta = llm.invoke(st.session_state.mensajes)
+
+    # mostrar respuesta del modelo
+    with st.chat_message("assistant"):
+        st.markdown(respuesta.content)
+
+    #Agregar respuesta en el historial de mensajes
+    st.session_state.mensajes.append(respuesta)
