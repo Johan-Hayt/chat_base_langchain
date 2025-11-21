@@ -35,11 +35,12 @@ for msg in st.session_state.mensajes:
 
 
 #cuadro de entrada de texto de usuario
-pregunta = st.chat_input("Escribe un mensaje...")
+pregunta = st.chat_input("Ask anything...")
 
 if pregunta:
     #Mostrar inmediatamente el mensaje del usuario en la interfaz
     with st.chat_message("user"):
         st.markdown(pregunta)
     
-    st.session_state.mensajes.append()
+    #Almacenamos el mensaje en la memoria de streamlit
+    st.session_state.mensajes.append(HumanMessage(content = pregunta))
