@@ -1,10 +1,13 @@
 from langchain_openai import ChatOpenAI
 from langchain.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.prompts import PromptTemplate
 import streamlit as st
 from dotenv import load_dotenv
 
 
 load_dotenv()
+
+
 
 #configuración inicial streamlit
 st.set_page_config(
@@ -23,6 +26,21 @@ with st.sidebar:
 
     #recrear modelo
     chat_model = ChatOpenAI(model=model_name, temperature=temperature)
+
+
+#Estructura de Prompt
+prompt_template = PromptTemplate(
+    input_variables=["query", "historial"],
+    template="""Eres un asistente útil y amigable llamado LaloBot. 
+    Historial de conversación:
+    {historial}
+
+    Responde de manera clara y concreta a la siguiente pregunta: {query}"""
+)
+
+
+# Configurar LCEL 
+cadena = prompt_template | chat_model
 
 
 # Inicializar el historial de mensajes
@@ -55,7 +73,8 @@ if pregunta:
 
 
     # Generar respuesta del asistente
-    respuesta = chat_model.invoke(st.session_state.mensajes)
+    respuesta = cadena.invoke({"query": pregunta,
+                               "historial": st.session_state.mensajes})
 
     # mostrar respuesta del modelo
     with st.chat_message("assistant"):
