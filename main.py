@@ -15,13 +15,13 @@ st.title("🤖 Chatbot con Langchain")
 st.markdown("Este es un chatbot base construido con Langchain y Streamlit")
 
 
-
+#sidebar de configuración de parámetros del chat
 with st.sidebar:
     st.header("Configuración")
     temperature = st.slider("Temperatura", 0.0, 1.0, 0.5, 0.1)
     model_name = st.selectbox("Modelo", ["gpt-5-nano", "gpt-5-mini", "gpt-4o-mini"])
 
-    # ¿Cómo recrearías el modelo con los nuevos parámetros?
+    #recrear modelo
     chat_model = ChatOpenAI(model=model_name, temperature=temperature)
 
 
