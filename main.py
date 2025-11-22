@@ -14,8 +14,16 @@ st.set_page_config(
 st.title("🤖 Chatbot con Langchain")
 st.markdown("Este es un chatbot base construido con Langchain y Streamlit")
 
-## inicializar llm
-llm = ChatOpenAI(model="gpt-5-nano", temperature=0.7)
+
+
+with st.sidebar:
+    st.header("Configuración")
+    temperature = st.slider("Temperatura", 0.0, 1.0, 0.5, 0.1)
+    model_name = st.selectbox("Modelo", ["gpt-5-nano", "gpt-5-mini", "gpt-4o-mini"])
+
+    # ¿Cómo recrearías el modelo con los nuevos parámetros?
+    chat_model = ChatOpenAI(model=model_name, temperature=temperature)
+
 
 # Inicializar el historial de mensajes
 if "mensajes" not in st.session_state:
@@ -24,7 +32,7 @@ if "mensajes" not in st.session_state:
 
 # iterar por los mensajes
 for msg in st.session_state.mensajes:
-    #validar si el mensaje es de tipo SytemMessage para no imprimirlo
+    #validar si el mensaje es de tipo SystemMessage para no imprimirlo
     if isinstance(msg, SystemMessage):
         continue
     
