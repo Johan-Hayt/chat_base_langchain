@@ -55,7 +55,7 @@ if pregunta:
 
 
     # Generar respuesta del asistente
-    respuesta = llm.invoke(st.session_state.mensajes)
+    respuesta = chat_model.invoke(st.session_state.mensajes)
 
     # mostrar respuesta del modelo
     with st.chat_message("assistant"):
