@@ -17,6 +17,9 @@ st.set_page_config(
 st.title("🤖 Chatbot con Langchain")
 st.markdown("Este es un chatbot base construido con Langchain y Streamlit")
 
+if st.button("🗑️ Nueva conversación"):
+    st.session_state.mensajes = []
+    st.rerun()  # Refresca para mostrar vacío
 
 #sidebar de configuración de parámetros del chat
 with st.sidebar:
@@ -64,21 +67,26 @@ for msg in st.session_state.mensajes:
 pregunta = st.chat_input("Ask anything...")
 
 if pregunta:
-    #Mostrar inmediatamente el mensaje del usuario en la interfaz
-    with st.chat_message("user"):
-        st.markdown(pregunta)
-    
-    #Almacenamos el mensaje en la memoria de streamlit
-    st.session_state.mensajes.append(HumanMessage(content = pregunta))
-
-
-    # Generar respuesta del asistente
-    respuesta = cadena.invoke({"query": pregunta,
-                               "historial": st.session_state.mensajes})
-
-    # mostrar respuesta del modelo
+  with st.chat_message("user"):
+    st.markdown(pregunta)
+  
+  try:
     with st.chat_message("assistant"):
-        st.markdown(respuesta.content)
+      response_placeholder = st.empty()
+      full_response = ""
 
-    #Agregar respuesta en el historial de mensajes
-    st.session_state.mensajes.append(respuesta)
+      # Ejecución por stream de la respuesta del modelo!
+      for chunk in cadena.stream({"query": pregunta, "historial": st.session_state.mensajes}):
+        full_response += chunk.content
+        response_placeholder.markdown(full_response + "▌") # El cursor parpadeante
+      
+      response_placeholder.markdown(full_response)
+    
+    # Almacenando los mensajes en el historial
+    st.session_state.mensajes.append(HumanMessage(content=pregunta))
+    st.session_state.mensajes.append(AIMessage(content=full_response))
+    
+  except Exception as e:
+    st.error(f"Error al generar respuesta: {str(e)}")
+    st.info("Verifica que tu API Key de OpenAI esté configurada correctamente.")
+
