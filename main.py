@@ -92,6 +92,7 @@ for msg in st.session_state.mensajes:
     
     #escribir mensaje
     role = "assistant" if isinstance(msg, AIMessage) else "user"
+    #Escribir en el chat
     with st.chat_message(role):
          st.markdown(msg.content)
 
@@ -103,6 +104,18 @@ if pregunta:
   with st.chat_message("user"):
     st.markdown(pregunta)
   
+    # Preparar historial como texto
+    historial_texto = ""
+    for msg in st.session_state.mensajes[-10:]:  # Últimos 10 mensajes
+        if isinstance(msg, HumanMessage):
+            historial_texto += f"Usuario: {msg.content}\n"
+        elif isinstance(msg, AIMessage):
+            historial_texto += f"Asistente: {msg.content}\n"
+    
+    if not historial_texto:
+        historial_texto = "(No hay historial previo)"
+
+
   try:
     with st.chat_message("assistant"):
       response_placeholder = st.empty()
