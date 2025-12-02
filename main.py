@@ -1,6 +1,6 @@
 from langchain_openai import ChatOpenAI
 from langchain.messages import HumanMessage, AIMessage, SystemMessage
-from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
+from langchain_core.prompts import PromptTemplate, ChatPromptTemplate, MessagesPlaceholder
 import streamlit as st
 from dotenv import load_dotenv
 
@@ -52,7 +52,8 @@ with st.sidebar:
 
     chat_prompt = ChatPromptTemplate.from_messages([
         ("system", system_messages[personalidad]),
-        ("human", "Historial de conversación:\n{historial}\n\nPregunta actual: {query}")
+        MessagesPlaceholder(variable_name="historial"),
+        ("human", "Usuario: {query}")
     ])
     
     cadena = chat_prompt | chat_model
